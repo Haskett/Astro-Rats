@@ -6,11 +6,15 @@ TagManager:
   tags:
   - Enemy
   - Laser
+  - Powerup
+  - Shield
+  - Asteroid
+  - EnemyWeapon
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Post Processing
   - Water
   - UI
   - 
