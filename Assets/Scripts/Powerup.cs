@@ -5,10 +5,8 @@ using UnityEngine;
 
 public class Powerup : MonoBehaviour
 {
-    [SerializeField]
-    private float _powerupSpeed = 3f;
-    [SerializeField] //0=TripleShot, 1=SpeedBoost, 2=Shield
-    private int _powerupID;
+    [SerializeField] private float _powerupSpeed = 3f;
+    [SerializeField] private int _powerupID; //0=TripleShot, 1=SpeedBoost, 2=Shield
 
     [SerializeField] AudioClip _powerupCollected;
     private AudioSource _audioSource;
@@ -21,7 +19,7 @@ public class Powerup : MonoBehaviour
         _audioSource = GetComponent<AudioSource>();
         if (_audioSource == null)
         {
-            Debug.LogError("Poperup Audio Source component is NULL.");
+            Debug.LogError("Powerup Audio Source component is NULL.");
         }
         else
         {
@@ -59,18 +57,20 @@ public class Powerup : MonoBehaviour
                 {
                     case 0:
                         player.ActivateTripleShot();
-                        Debug.Log("TRIPLE SHOT GONNA BURN YOU DOWN!");
                         break;
                     case 1:
                         player.ActivateSpeedBoost();
-                        Debug.Log("SPEED BOOST, BOYYYYY!");
                         break;
                     case 2:
                         player.ActivateShield();
-                        Debug.Log("SHIELDS, SUCKERS!");
+                        break;
+                    case 3:
+                        player.AddAmmo();
+                        break;
+                    case 4:
+                        player.AddLife();
                         break;
                     default:
-                        Debug.Log("Default Value");
                         break;
                 }
             }

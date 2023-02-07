@@ -7,17 +7,24 @@ using UnityEngine.AI;
 public class Asteroid : MonoBehaviour
 {
     [SerializeField] private float _rotationSpeed = 36.0f;
+
     private Player _player;
+    private SpawnManager _spawnManager;
     private Animator _anim;
     private PolygonCollider2D _collider;
     private AudioSource _audioSource;
-    [SerializeField] private GameObject _littleAsteroid;
-    [SerializeField] private GameObject _obstacleContainer;
 
+    [SerializeField] private GameObject _littleAsteroid;
     [SerializeField] private AudioClip _explosion;
 
     void Start()
     {
+        _spawnManager = GameObject.Find("Spawn_Manager").GetComponent<SpawnManager>();
+        if (_spawnManager == null)
+        {
+            Debug.LogError("Spawn Manager is NULL");
+        }    
+        
         _anim = GetComponent<Animator>();
         if (_anim == null)
         {
@@ -61,13 +68,22 @@ public class Asteroid : MonoBehaviour
             {
                 _player.AddScore(50);
             }
+            
+            GameObject _littleAsteroidContainer = _spawnManager.transform.GetChild(1).gameObject;
+            
             _anim.SetTrigger("OnAsteroidDestruction");
             _audioSource.Play();
             _collider.enabled = !_collider.enabled;
-            Instantiate(_littleAsteroid, transform.position, Quaternion.identity);
-            Instantiate(_littleAsteroid, transform.position, Quaternion.identity);
-            Instantiate(_littleAsteroid, transform.position, Quaternion.identity);
-            Instantiate(_littleAsteroid, transform.position, Quaternion.identity);
+
+            GameObject newLittleAsteroid1 = Instantiate(_littleAsteroid, transform.position, Quaternion.identity);
+            newLittleAsteroid1.transform.parent = _littleAsteroidContainer.transform;
+            GameObject newLittleAsteroid2 = Instantiate(_littleAsteroid, transform.position, Quaternion.identity);
+            newLittleAsteroid2.transform.parent = _littleAsteroidContainer.transform;
+            GameObject newLittleAsteroid3 = Instantiate(_littleAsteroid, transform.position, Quaternion.identity);
+            newLittleAsteroid3.transform.parent = _littleAsteroidContainer.transform;
+            GameObject newLittleAsteroid4 = Instantiate(_littleAsteroid, transform.position, Quaternion.identity);
+            newLittleAsteroid4.transform.parent = _littleAsteroidContainer.transform;
+            
             Destroy(this.gameObject, 2.5f);
             Destroy(transform.parent.gameObject, 2.5f);
         }

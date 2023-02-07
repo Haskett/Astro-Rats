@@ -9,7 +9,8 @@ public class Enemy : MonoBehaviour
     private Player _player;
     private Animator _anim;
     private PolygonCollider2D _collider;
-
+    
+    private GameObject _spawnManager;
     [SerializeField] private GameObject _laserPrefab;
 
     [SerializeField] AudioClip _explosion;
@@ -19,6 +20,12 @@ public class Enemy : MonoBehaviour
 
     void Start()
     {
+        _spawnManager = GameObject.Find("Spawn_Manager");
+        if (_spawnManager == null)
+        {
+            Debug.LogError("Spawn Manager is NULL.");
+        }    
+
         _player = GameObject.Find("Player").GetComponent<Player>();    
         if (_player == null)
         {
@@ -67,7 +74,14 @@ public class Enemy : MonoBehaviour
     {
         while (_player != null)
         {
-            Instantiate(_laserPrefab, transform.position + new Vector3(0, -0.63f, 0), Quaternion.identity);
+            GameObject _enemyLaserContainer = _spawnManager.transform.GetChild(2).gameObject;
+            if (_enemyLaserContainer == null)
+            {
+                Debug.LogError("Spawn Manager's Enemy Laser Container is NULL.");
+            }
+
+            GameObject newEnemyLaser = Instantiate(_laserPrefab, transform.position + new Vector3(0, -0.63f, 0), Quaternion.identity);
+            newEnemyLaser.transform.parent = _enemyLaserContainer.transform;
             yield return new WaitForSeconds(Random.Range(2.0f, 4.0f));
         }
     }

@@ -7,6 +7,7 @@ public class AsteroidLittle : MonoBehaviour
     private Animator _anim;
     private PolygonCollider2D _collider;
     private AudioSource _audioSource;
+    private SpawnManager _spawnManager;
     [SerializeField] private AudioClip _explosion;
     private Player _player;
     [SerializeField] private float _rotationSpeed = 36.0f;
@@ -39,6 +40,12 @@ public class AsteroidLittle : MonoBehaviour
         else
         {
             _audioSource.clip = _explosion;
+        }
+
+        _spawnManager = GameObject.Find("Spawn_Manager").GetComponent<SpawnManager>();
+        if (_spawnManager == null)
+        {
+            Debug.LogError("The Spawn Manager is NULL.");
         }
     }
 

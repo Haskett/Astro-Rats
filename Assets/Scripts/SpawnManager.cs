@@ -15,6 +15,7 @@ public class SpawnManager : MonoBehaviour
         StartCoroutine(SpawnEnemyRoutine());
         StartCoroutine(SpawnPowerupRoutine());
         StartCoroutine(SpawnAsteroidRoutine());
+        StartCoroutine(SpawnAmmo());
     }
     IEnumerator SpawnEnemyRoutine()
     {
@@ -41,12 +42,36 @@ public class SpawnManager : MonoBehaviour
     {
         while (_stopSpawning == false)
         {
+            GameObject _powerupContainer = transform.GetChild(4).gameObject;
+            if (_powerupContainer == null)
+            {
+                Debug.LogError("Spawn Manager's Powerup Container is NULL.");
+            }
+            
             Vector3 posToSpawnTripleShot = new Vector3(Random.Range(-8f, 8f), 10, 0);
-            int randomPowerUp = Random.Range(0, 3);
-            Instantiate(powerups[randomPowerUp], posToSpawnTripleShot, Quaternion.identity);
+            int randomPowerUp = Random.Range(0, 5);
+            GameObject _newPowerup = Instantiate(powerups[randomPowerUp], posToSpawnTripleShot, Quaternion.identity);
+            _newPowerup.transform.parent = _powerupContainer.transform;
+            
             yield return new WaitForSeconds(Random.Range(8f, 12f));
         }
+    }
 
+    IEnumerator SpawnAmmo()
+    {
+        while (_stopSpawning == false)
+        {
+            GameObject _powerupContainer = transform.GetChild(4).gameObject;           
+            if (_powerupContainer == null)
+            {
+                Debug.LogError("Spawn Manager's Powerup Container is NULL.");
+            }
+
+            Vector3 posToSpawnAmmo = new Vector3(Random.Range(-8f, 8f), 10, 0);
+            GameObject _newPowerup = Instantiate(powerups[3], posToSpawnAmmo, Quaternion.identity);
+            _newPowerup.transform.parent = _powerupContainer.transform;
+            yield return new WaitForSeconds(Random.Range(2f, 6f));
+        }
     }
     public void OnPlayerDeath()
     {

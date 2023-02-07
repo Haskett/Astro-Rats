@@ -18,17 +18,34 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Button _quitButton;
     [SerializeField] private Button _resumeButton;
 
+    [SerializeField] private TMP_Text _ammoCountTMP;
+    
+    private Player _player;
+
     private GameManager _gameManager;
 
     void Start()
     {
         _scoreTextTMP.text = "Score: " + 0;
+        _ammoCountTMP.text = "Ammo: " + 15;
+
         _gameOverTMP.gameObject.SetActive(false);
         _restartTMP.gameObject.SetActive(false);
-        _gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();
         _quitGameTMP.gameObject.SetActive(false);
         _quitButton.gameObject.SetActive(false);
         _resumeButton.gameObject.SetActive(false);
+        
+        _player = GameObject.Find("Player").GetComponent<Player>();
+        if (_player == null)
+        {
+            Debug.LogError("The Player is NULL.");
+        }
+
+        _gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();
+        if (_gameManager == null)
+        {
+            Debug.LogError("Game Manager is NULL.");
+        }
     }
 
     public void UpdateScore(int playerScore)
@@ -36,9 +53,13 @@ public class UIManager : MonoBehaviour
         _scoreTextTMP.text = "Score: " + playerScore;
     }
 
+    public void UpdateAmmo(int ammo)
+    {
+        _ammoCountTMP.text = "Ammo: " + ammo;
+    }
+
     public void QuitGameMenu()
     {
-        Debug.Log("QuitGameMenu activated");
         IsQuitting();
         _quitGameTMP.gameObject.SetActive(true);
         _quitButton.gameObject.SetActive(true);
@@ -53,6 +74,15 @@ public class UIManager : MonoBehaviour
     public void QuitApplication()
     {
         Application.Quit();
+    }
+
+    public void ResumePlaying()
+    {
+        Time.timeScale = 1;
+        _quitGameTMP.gameObject.SetActive(false);
+        _quitButton.gameObject.SetActive(false);
+        _resumeButton.gameObject.SetActive(false);
+        _isQuitting = false;
     }
 
     public void UpdateLives(int currentLives)

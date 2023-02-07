@@ -19,16 +19,17 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            _uiManager.QuitGameMenu();
+            Time.timeScale = 0;
+        }
+
         if (Input.GetKeyDown(KeyCode.R) && _isGameOver == true)
         {
             SceneManager.LoadScene(1); //Current "Game" scene
         }
-
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            _uiManager.QuitGameMenu();
-        }
-    }
+   }
 
     public void GameOver()
     {
