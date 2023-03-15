@@ -13,6 +13,7 @@ public class Player : MonoBehaviour
     [SerializeField] private float _speedBoostPowerupMultiplier;
     [SerializeField] private GameObject _laserPrefab;
     [SerializeField] private GameObject _tripleShotPrefab;
+    [SerializeField] private GameObject _omniShotPrefab;
 
     [SerializeField] private GameObject _shieldVisualizer2;
     [SerializeField] private GameObject _shieldVisualizer1;
@@ -29,6 +30,7 @@ public class Player : MonoBehaviour
     [SerializeField] private bool _tripleShotActive;
     [SerializeField] private bool _speedBoostActive;
     [SerializeField] private bool _shieldActive;
+    [SerializeField] private bool _omniShotActive;
     [SerializeField] private bool _thrusterActive;
     [SerializeField] private int _score;
 
@@ -103,7 +105,6 @@ public class Player : MonoBehaviour
     {
         CalculateMovement();
         PrimaryAttack();
-        //ShieldVisualizer();
 
         if (Input.GetKey(KeyCode.LeftShift))
         {
@@ -125,12 +126,12 @@ public class Player : MonoBehaviour
             _hasAmmo = true;
         }
 
-        if (_tripleShotActive == false && Input.GetKeyDown(KeyCode.Space) && Time.time > _canFire && _hasAmmo == true)
+        if (_tripleShotActive == false && _omniShotActive == false && Input.GetKeyDown(KeyCode.Space) && Time.time > _canFire && _hasAmmo == true)
         {
             GameObject _playerLaserContainer = _spawnManager.transform.GetChild(3).gameObject;
             if (_playerLaserContainer == null)
             {
-                Debug.LogError("Spawn Manager's Enemy Laser Container is NULL.");
+                Debug.LogError("Spawn Manager's Laser Container is NULL.");
             }
 
             _canFire = Time.time + _cooldown;
@@ -141,12 +142,12 @@ public class Player : MonoBehaviour
             _audioSource.Play();
         }
 
-        else if (_tripleShotActive == true && Input.GetKeyDown(KeyCode.Space) && Time.time > _canFire && _hasAmmo == true)
+        else if (_tripleShotActive == true && _omniShotActive == false && Input.GetKeyDown(KeyCode.Space) && Time.time > _canFire && _hasAmmo == true)
         {
             GameObject _playerLaserContainer = _spawnManager.transform.GetChild(3).gameObject;
             if (_playerLaserContainer == null)
             {
-                Debug.LogError("Spawn Manager's Enemy Laser Container is NULL.");
+                Debug.LogError("Spawn Manager's Laser Container is NULL.");
             }
 
             _canFire = Time.time + _cooldown;
@@ -155,6 +156,21 @@ public class Player : MonoBehaviour
             GameObject newPlayerTripleShot = Instantiate(_tripleShotPrefab, transform.position + new Vector3(0, 0.63f, 0), Quaternion.identity);
             newPlayerTripleShot.transform.parent = _playerLaserContainer.transform;
             _audioSource.Play();
+        }
+
+        else if (_tripleShotActive == false && _omniShotActive == true && Input.GetKeyDown(KeyCode.Space) && Time.time > _canFire && _hasAmmo == true)
+        {
+            GameObject _playerLaserContainer = _spawnManager.transform.GetChild(3).gameObject;
+            if (_playerLaserContainer == null)
+            {
+                Debug.LogError("Spawn Manager's Laser container is NULL.");
+            }
+
+            _canFire = Time.time + _cooldown;
+            _ammoCount--;
+            _uiManager.UpdateAmmo(_ammoCount);
+            GameObject newPlayerOmniShot = Instantiate(_omniShotPrefab, transform.position, Quaternion.identity);
+            newPlayerOmniShot.transform.parent = _playerLaserContainer.transform;
         }
     }
     void CalculateMovement()
@@ -177,16 +193,6 @@ public class Player : MonoBehaviour
             }
         }
     }
-
-    //void ShieldVisualizer()
-    //{
-    //    if (_shieldActive == true)
-    //    {
-    //        _shieldVisualizer2.SetActive(true);
-    //        _shieldVisualizer1.SetActive(true);
-    //        _shieldVisualizer0.SetActive(true);
-    //    }
-    //}
 
     public void Damage()
     {
@@ -215,14 +221,26 @@ public class Player : MonoBehaviour
         }
 
         _lives--;
+        DamageVisualizer();
+    }
 
+    public void DamageVisualizer()
+    {
+        if (_lives == 3)
+        {
+            _leftEngine.SetActive(false);
+            _rightEngine.SetActive(false);
+        }
+        
         if (_lives == 2)
         {
             _leftEngine.SetActive(true);
+            _rightEngine.SetActive(false);
         }
 
         if (_lives == 1)
         {
+            _leftEngine.SetActive(true);
             _rightEngine.SetActive(true);
         }
 
@@ -244,6 +262,7 @@ public class Player : MonoBehaviour
     public void ActivateTripleShot()
     {
         _tripleShotActive = true;
+        _omniShotActive = false;
         StartCoroutine(TripleShotPowerDownRoutine());
     }
 
@@ -252,6 +271,22 @@ public class Player : MonoBehaviour
         _speedBoostActive = true;
         _speed *= _speedBoostPowerupMultiplier;
         StartCoroutine(SpeedBoostPowerDownRoutine());
+    }
+
+    public void ActivateOmniShot()
+    {
+        _omniShotActive = true;
+        _tripleShotActive = false;
+        StartCoroutine(OmniShotPowerdownRoutine());
+    }
+    
+    IEnumerator OmniShotPowerdownRoutine()
+    {
+        while (_omniShotActive == true)
+        {
+            yield return new WaitForSeconds(5.0f);
+            _omniShotActive = false;
+        }
     }
 
     public void ActivateShield()
@@ -282,6 +317,7 @@ public class Player : MonoBehaviour
         if (_lives < 3)
         {
             _lives++;
+            DamageVisualizer();
             _uiManager.UpdateLives(_lives);
         }
 

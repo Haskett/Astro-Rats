@@ -6,7 +6,7 @@ using UnityEngine;
 public class Powerup : MonoBehaviour
 {
     [SerializeField] private float _powerupSpeed = 3f;
-    [SerializeField] private int _powerupID; //0=TripleShot, 1=SpeedBoost, 2=Shield
+    [SerializeField] private int _powerupID; 
 
     [SerializeField] AudioClip _powerupCollected;
     private AudioSource _audioSource;
@@ -69,6 +69,9 @@ public class Powerup : MonoBehaviour
                         break;
                     case 4:
                         player.AddLife();
+                        break;
+                    case 5:
+                        player.ActivateOmniShot();
                         break;
                     default:
                         break;

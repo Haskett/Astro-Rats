@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
+using System.Threading;
 
 public class UIManager : MonoBehaviour
 {
@@ -17,6 +18,9 @@ public class UIManager : MonoBehaviour
     [SerializeField] private bool _isQuitting;
     [SerializeField] private Button _quitButton;
     [SerializeField] private Button _resumeButton;
+    
+    [SerializeField] private Image _fuelBar;
+    [SerializeField] private float fuelCooldownTime;
 
     [SerializeField] private TMP_Text _ammoCountTMP;
     
@@ -45,6 +49,18 @@ public class UIManager : MonoBehaviour
         if (_gameManager == null)
         {
             Debug.LogError("Game Manager is NULL.");
+        }
+    }
+
+    public void Update()
+    {
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            _fuelBar.fillAmount -= 1.0f / fuelCooldownTime * Time.deltaTime;
+        }
+        else
+        {
+            _fuelBar.fillAmount += 1.0f / fuelCooldownTime * Time.deltaTime;
         }
     }
 
