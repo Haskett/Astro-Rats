@@ -726,6 +726,7 @@ GameObject:
   - component: {fileID: 319608621}
   - component: {fileID: 319608620}
   - component: {fileID: 319608623}
+  - component: {fileID: 319608624}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -859,6 +860,18 @@ MonoBehaviour:
   m_BeforeTransparentBundles: []
   m_BeforeStackBundles: []
   m_AfterStackBundles: []
+--- !u!114 &319608624
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 319608619}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e25e36aa6e1174d4291da47057be3e25, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &535257662
 GameObject:
   m_ObjectHideFlags: 0
@@ -1419,6 +1432,7 @@ MonoBehaviour:
   _quitButton: {fileID: 1133314198}
   _resumeButton: {fileID: 727592917}
   _fuelBar: {fileID: 1910905990}
+  FuelAmount: 0
   fuelCooldownTime: 3
   _ammoCountTMP: {fileID: 991836581}
 --- !u!1 &882315672

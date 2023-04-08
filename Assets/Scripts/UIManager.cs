@@ -20,6 +20,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Button _resumeButton;
     
     [SerializeField] private Image _fuelBar;
+    public float FuelAmount;
     [SerializeField] private float fuelCooldownTime;
 
     [SerializeField] private TMP_Text _ammoCountTMP;
@@ -54,6 +55,11 @@ public class UIManager : MonoBehaviour
 
     public void Update()
     {
+        FuelBarManager();
+    }
+
+    public void FuelBarManager()
+    {
         if (Input.GetKey(KeyCode.LeftShift))
         {
             _fuelBar.fillAmount -= 1.0f / fuelCooldownTime * Time.deltaTime;
@@ -62,6 +68,7 @@ public class UIManager : MonoBehaviour
         {
             _fuelBar.fillAmount += 1.0f / fuelCooldownTime * Time.deltaTime;
         }
+        FuelAmount = _fuelBar.fillAmount;
     }
 
     public void UpdateScore(int playerScore)

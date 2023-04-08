@@ -41,10 +41,15 @@ public class Player : MonoBehaviour
     private SpawnManager _spawnManager;
     private AudioSource _audioSource;
     private Animator _anim;
+    private Shake _camera;
 
     [SerializeField] private GameObject _leftEngine, _rightEngine;
     [SerializeField] private GameObject _thruster;
-    
+
+    [SerializeField] private float _shakeDuration = 0.15f;
+    [SerializeField] private float _shakeMagnitude = 0.4f;
+
+
     void Start()
     {
         transform.position = new Vector3(0, -3.5f, 0);
@@ -69,6 +74,12 @@ public class Player : MonoBehaviour
         }     
         _leftEngine.SetActive(false);
 
+        _camera = GameObject.Find("Main Camera").GetComponent<Shake>();
+        if (_camera == null)
+        {
+            Debug.LogError("The Camera is NULL.");
+        }
+        
         _uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
         if (_uiManager == null)
         {
@@ -105,15 +116,6 @@ public class Player : MonoBehaviour
     {
         CalculateMovement();
         PrimaryAttack();
-
-        if (Input.GetKey(KeyCode.LeftShift))
-        {
-            _shiftSpeedBoost = _heldShiftSpeedBoost;
-        }
-        else
-        {
-            _shiftSpeedBoost = 1.0f;
-        }
     }
     void PrimaryAttack()
     {
@@ -191,6 +193,15 @@ public class Player : MonoBehaviour
             {
                 transform.position = new Vector3(11.4f, transform.position.y, transform.position.z);
             }
+
+            if (Input.GetKey(KeyCode.LeftShift) && _uiManager.FuelAmount >= 0.01f)
+            {
+                _shiftSpeedBoost = _heldShiftSpeedBoost;
+            }
+            else
+            {
+                _shiftSpeedBoost = 1.0f;
+            }
         }
     }
 
@@ -222,6 +233,7 @@ public class Player : MonoBehaviour
 
         _lives--;
         DamageVisualizer();
+        StartCoroutine(_camera.CameraShake(_shakeDuration, _shakeMagnitude));
     }
 
     public void DamageVisualizer()
