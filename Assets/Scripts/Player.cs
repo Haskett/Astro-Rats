@@ -321,6 +321,10 @@ public class Player : MonoBehaviour
     public void AddAmmo()
     {
         _ammoCount += 7;
+        if (_ammoCount >= 25)
+        {
+            _ammoCount = 24;
+        }
         _uiManager.UpdateAmmo(_ammoCount);
     }
 

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour
@@ -9,53 +10,18 @@ public class Enemy : MonoBehaviour
     private Player _player;
     private Animator _anim;
     private PolygonCollider2D _collider;
-    
     private GameObject _spawnManager;
     [SerializeField] private GameObject _laserPrefab;
-
     [SerializeField] AudioClip _explosion;
     private AudioSource _audioSource;
-
     private IEnumerator _enemyAttack;
 
     void Start()
     {
-        _spawnManager = GameObject.Find("Spawn_Manager");
-        if (_spawnManager == null)
-        {
-            Debug.LogError("Spawn Manager is NULL.");
-        }    
-
-        _player = GameObject.Find("Player").GetComponent<Player>();    
-        if (_player == null)
-        {
-            Debug.LogError("The Player is NULL.");
-        }
-
-        _anim = GetComponent<Animator>();
-        if (_anim == null)
-        {
-            Debug.LogError("The Enemy Animator is NULL.");
-        }
-
-        _collider = GetComponent<PolygonCollider2D>();
-        if (_collider == null)
-        {
-            Debug.LogError("The Enemy PolygonCollider2D component is NULL.");
-        }
-
-        _audioSource = GetComponent<AudioSource>();
-        if (_audioSource == null)
-        {
-            Debug.LogError("Enemy AudioSource is NULL.");
-        }
-        else
-        {
-            _audioSource.clip = _explosion;
-        }
+        NullCheck();
         _enemyAttack = EnemyAttackRoutine();
         StartCoroutine(_enemyAttack);
-    }
+}
 
     void Update()
     {
@@ -67,7 +33,7 @@ public class Enemy : MonoBehaviour
     }
     void EnemyMovement()
     {
-        transform.Translate(_enemySpeed * new Vector3(0, -1f, 0) * Time.deltaTime);
+        transform.Translate(_enemySpeed * new Vector3(Mathf.Sin(transform.position.y), -1f, 0) * Time.deltaTime);
     }
 
     IEnumerator EnemyAttackRoutine()
@@ -126,6 +92,43 @@ public class Enemy : MonoBehaviour
             _audioSource.Play();
             _enemySpeed = 1.5f;
             Destroy(this.gameObject, 2.25f);
+        }
+    }
+
+    private void NullCheck()
+    {
+        _spawnManager = GameObject.Find("Spawn_Manager");
+        if (_spawnManager == null)
+        {
+            Debug.LogError("Spawn Manager is NULL.");
+        }
+
+        _player = GameObject.Find("Player").GetComponent<Player>();
+        if (_player == null)
+        {
+            Debug.LogError("The Player is NULL.");
+        }
+
+        _anim = GetComponent<Animator>();
+        if (_anim == null)
+        {
+            Debug.LogError("The Enemy Animator is NULL.");
+        }
+
+        _collider = GetComponent<PolygonCollider2D>();
+        if (_collider == null)
+        {
+            Debug.LogError("The Enemy PolygonCollider2D component is NULL.");
+        }
+
+        _audioSource = GetComponent<AudioSource>();
+        if (_audioSource == null)
+        {
+            Debug.LogError("Enemy AudioSource is NULL.");
+        }
+        else
+        {
+            _audioSource.clip = _explosion;
         }
     }
 }

@@ -18,6 +18,9 @@ public class UIManager : MonoBehaviour
     [SerializeField] private bool _isQuitting;
     [SerializeField] private Button _quitButton;
     [SerializeField] private Button _resumeButton;
+
+    [SerializeField] private Sprite[] _ammoSprite;
+    [SerializeField] private Image _ammoImage;
     
     [SerializeField] private Image _fuelBar;
     public float FuelAmount;
@@ -32,25 +35,15 @@ public class UIManager : MonoBehaviour
     void Start()
     {
         _scoreTextTMP.text = "Score: " + 0;
-        _ammoCountTMP.text = "Ammo: " + 15;
+        _ammoCountTMP.text = 15 + "/24";
 
         _gameOverTMP.gameObject.SetActive(false);
         _restartTMP.gameObject.SetActive(false);
         _quitGameTMP.gameObject.SetActive(false);
         _quitButton.gameObject.SetActive(false);
         _resumeButton.gameObject.SetActive(false);
-        
-        _player = GameObject.Find("Player").GetComponent<Player>();
-        if (_player == null)
-        {
-            Debug.LogError("The Player is NULL.");
-        }
 
-        _gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();
-        if (_gameManager == null)
-        {
-            Debug.LogError("Game Manager is NULL.");
-        }
+        NullCheck();
     }
 
     public void Update()
@@ -78,7 +71,19 @@ public class UIManager : MonoBehaviour
 
     public void UpdateAmmo(int ammo)
     {
-        _ammoCountTMP.text = "Ammo: " + ammo;
+        _ammoCountTMP.text = ammo + "/24";
+        _ammoImage.sprite = _ammoSprite[ammo];
+    }
+
+    public void UpdateLives(int currentLives)
+    {
+        _LivesImage.sprite = _lifeSprite[currentLives];
+
+        if (currentLives == 0)
+        {
+            GameOverSequence();
+            _gameManager.GameOver();
+        }
     }
 
     public void QuitGameMenu()
@@ -108,17 +113,6 @@ public class UIManager : MonoBehaviour
         _isQuitting = false;
     }
 
-    public void UpdateLives(int currentLives)
-    {
-        _LivesImage.sprite = _lifeSprite[currentLives];
-
-        if (currentLives == 0)
-        {
-            GameOverSequence();
-            _gameManager.GameOver();
-        }
-    }
-
     void GameOverSequence()
     {
         _gameOverTMP.gameObject.SetActive(true);
@@ -134,6 +128,21 @@ public class UIManager : MonoBehaviour
             yield return new WaitForSeconds(_flickerRate);
             _gameOverTMP.gameObject.SetActive(true);
             yield return new WaitForSeconds(_flickerRate);
+        }
+    }
+
+    private void NullCheck()
+    {
+        _player = GameObject.Find("Player").GetComponent<Player>();
+        if (_player == null)
+        {
+            Debug.LogError("The Player is NULL.");
+        }
+
+        _gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();
+        if (_gameManager == null)
+        {
+            Debug.LogError("Game Manager is NULL.");
         }
     }
 }
